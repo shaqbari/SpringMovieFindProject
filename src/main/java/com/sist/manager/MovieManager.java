@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import com.sist.dao.MovieDAO;
 
+
 import java.util.*;
 
 import javax.xml.bind.JAXBContext;
@@ -20,15 +21,12 @@ import java.io.*;
 @Component("mm")
 public class MovieManager {
 	@Autowired
-	private MovieDAO dao;
+	 private MovieDAO dao;
     private List<String> list=
     		new ArrayList<String>();
-    
-    
-    //웹이 아닌 일반자바에서는 src/main/java에 xml파일이 있어야 한다.
 	public static void main(String[] args) {
-		
-		String[] path={"application-context.xml", "application-mongo.xml"};
+		// TODO Auto-generated method stub
+		String[] path={"application-context.xml","application-mongo.xml"};
 		ApplicationContext app=
 				new ClassPathXmlApplicationContext(path);
 		MovieManager mm=(MovieManager)app.getBean("mm");
@@ -102,13 +100,14 @@ public class MovieManager {
 		    }
 		    Element starElem=doc.select("div.star_score span.st_on").first();
 		    String star="";
+		    // 9.88
 		    if(starElem.text().equals("관람객 평점 없음"))
 		    {
 		    	star="0";
 		    }
 		    else
 		    {
-		    	star=starElem.text().replaceAll("[가-힣]", "");//한글제외 (관람객 평점 9.99점)에서 숫자만 나오게한다.
+		    	star=starElem.text().replaceAll("[가-힣]", "");
 		    }
 		    Element storyElem=doc.select("div.story_area p.con_tx").first();
 		    String story=storyElem.text();
@@ -141,9 +140,71 @@ public class MovieManager {
 			System.out.println(ex.getMessage());
 		}
 	}
+	public List<MovieInfoVO> cgvMainData()
+	   {
+		   List<MovieInfoVO> list=new ArrayList<MovieInfoVO>();
+		   try
+		   {
+			   Document doc=Jsoup.connect("http://www.cgv.co.kr/movies/?ft=0").get();
+			   // title
+			   Elements telem=doc.select("div.box-contents a strong.title");
+			   // poster
+			   Elements pelem=doc.select("div.box-image span.thumb-image img");
+			   // reserve
+			   Elements relem=doc.select("div.score strong.percent span");
+			   // regdate
+			   Elements delem=doc.select("span.txt-info strong");
+			   // link
+			   /*
+			    * div class="box-image">
+	                        <strong class="rank">No.1</strong>	
+	                        <a href="/movies/detail-view/?midx=79748">
+			    */
+			   Elements lelem=doc.select("div.box-contents a");
+			   // like
+			   /*
+			    *  <span class="count"> 
+	                                <strong><i>10,083</i><span>
+			    */
+			   Elements felem=doc.select("span.count strong i");
+			   int j=0;
+			   for(int i=0;i<7;i++)
+			   {
+				   Element title=telem.get(i);
+				   Element poster=pelem.get(i);
+				   Element regdate=delem.get(i);
+				   Element reserve=relem.get(i);
+				   Element link=lelem.get(j);
+				   Element like=felem.get(i);
+				   
+				   System.out.println(
+				       title.text()+" "
+				       +poster.attr("src")+" "
+				       +regdate.text()+" "
+				       +reserve.text()+" "
+				       +link.attr("href")+" "
+				       +like.text()
+				    );
+				   MovieInfoVO vo=new MovieInfoVO();
+				   vo.setMno(i+1);
+				   vo.setTitle(title.text());
+				   vo.setPoster(poster.attr("src"));
+				   vo.setReserve(reserve.text().replace("%", ""));
+				   vo.setLink(link.attr("href"));
+				   vo.setLike(like.text().replace(",", ""));
+				   vo.setRegdate(regdate.text().substring(0,regdate.text().indexOf("개")).trim());
+				   list.add(vo);
+				   j+=2;
+			   }
+		   }catch(Exception ex)
+		   {
+			   System.out.println(ex.getMessage());
+		   }
+		   return list;
+	   }
 	// 7b429affa32c43e1adf62ad1eebb6928
 	/*
-	 *  https://apis.daum.net/search/blog?apikey={apikey}&q=īī\BF\C0\C5\E5&output=xml
+	 *  https://apis.daum.net/search/blog?apikey={apikey}&q=īī����&output=xml
 	 */
 	/*public void movieReviewData(int page,String title)
 	{
@@ -165,7 +226,7 @@ public class MovieManager {
 			System.out.println(ex.getMessage());
 		}
 	}*/
-	// \BF\B9\B8\C5\C0\B2 , \B9ڽ\BA\BF\C0\C7ǽ\BA , \BF\B5ȭ \BC\F8\C0\A7
+	// ������ , �ڽ����ǽ� , ��ȭ ����
 	/*public List<MovieInfoVO> getRankData()
 	   {
 		   List<MovieInfoVO> mrv=new ArrayList<MovieInfoVO>();
@@ -293,6 +354,7 @@ public class MovieManager {
 		}
 */
 }
+
 
 
 

@@ -5,21 +5,47 @@
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:mongo="http://www.springframework.org/schema/data/mongo"
 	xmlns:p="http://www.springframework.org/schema/p"
-	xmlns:util="http://www.springframework.org/schema/util"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.2.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd
-		http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo-1.8.xsd
-		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.2.xsd">
-
-	<mongo:mongo-client
-	 	host="211.238.142.104"
-	 	id="mc"
-	 	port="27017"
-	 />
-	 <bean id="mt"	class="org.springframework.data.mongodb.core.MongoTemplate">
-		   	<constructor-arg ref="mc"/>
-		   	<constructor-arg name="databaseName" value="mydb"/>
-	   </bean>
-
+		http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo-1.8.xsd">
+    <!-- 
+         Connection : MongoClient
+         DB : DataBase (ORCL => mydb)
+         DBCollection : Table
+          new MongoClient(ip,port)
+     -->
+     <!-- 
+         mc=new MongoClient(new ServerAddress(new InetSocketAddress("211.238.142.98",27017)));
+      -->
+       <mongo:mongo-client
+           host="211.238.142.104"
+           id="mc"
+           port="27017"
+        />
+        <!-- SqlSessionFactory 
+          public class MongoTemplate
+           {
+              private MongoClient mc;
+              private DB db;
+              public MongoTemplate(MongoClient mc,String databaseName)
+                {
+                    this.mc=mc;
+                    db=mc.getDB(databaseName);
+                }
+           }
+           insert(vo)
+        -->
+       <bean id="mt"
+           class="org.springframework.data.mongodb.core.MongoTemplate">
+           <constructor-arg ref="mc"/>
+           <constructor-arg name="databaseName" value="mydb"/>
+       </bean>
 </beans>
+
+
+
+
+
+
+
