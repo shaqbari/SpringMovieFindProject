@@ -202,6 +202,30 @@ public class MovieManager {
 		   }
 		   return list;
 	   }
+	
+		
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	// 7b429affa32c43e1adf62ad1eebb6928
 	/*
 	 *  https://apis.daum.net/search/blog?apikey={apikey}&q=īī����&output=xml

@@ -28,7 +28,8 @@ $(function(){
 </head>
 
 <body>
-
+<%-- <%=application.getRealPath("/") %> --%>
+<!-- /home/sist/springDev/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/wtpwebapps/SpringMovieFindProject/  -->
 <div class="container">
   <div class="top">
     <div class="search-button">

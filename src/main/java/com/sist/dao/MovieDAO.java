@@ -45,6 +45,15 @@ public class MovieDAO {
 	   MovieVO vo=mt.findOne(query, MovieVO.class,"movie");
       return vo;
    }
+   
+   public MovieVO movieRecommandData(String title)
+   {
+	  MovieVO movieVo=new MovieVO();
+	   BasicQuery query=new BasicQuery("{title:'"+title+"'}");
+	   movieVo=mt.findOne(query,MovieVO.class,"movie");
+	   return movieVo;
+   }
+   
    public List<MovieVO> movieFind(String data)
    {
 	   List<MovieVO> list=new ArrayList<MovieVO>();
@@ -57,6 +66,19 @@ public class MovieDAO {
 	   List<MovieVO> list=new ArrayList<MovieVO>();
 	   BasicQuery query=new BasicQuery("{genre:{'$regex':'.*"+genre+"'}}");
 	   list=mt.find(query,MovieVO.class,"movie");
+	   return list;
+   }
+   
+   public List<String> movieTitleAllData(){
+	   List<String> list=new ArrayList<String>();
+	   Query query=new Query();
+	   List<MovieVO> mList=mt.find(query, MovieVO.class, "movie");
+	   //특정컬럼만 가져올수 없기 때문에 다받고 for문으로 가져와양 한다.
+	   for (MovieVO vo : mList) {
+		   list.add(vo.getTitle());
+		}
+	   System.out.println("movieTitleAllData에서"+list.size());
+	   
 	   return list;
    }
    

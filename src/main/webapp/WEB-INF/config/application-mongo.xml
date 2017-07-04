@@ -19,7 +19,7 @@
          mc=new MongoClient(new ServerAddress(new InetSocketAddress("211.238.142.98",27017)));
       -->
        <mongo:mongo-client
-           host="211.238.142.98"
+           host="211.238.142.104"
            id="mc"
            port="27017"
         />

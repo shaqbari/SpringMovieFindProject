@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:hadoop="http://www.springframework.org/schema/hadoop"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd
+		http://www.springframework.org/schema/hadoop http://www.springframework.org/schema/hadoop/spring-hadoop.xsd">
+		
+	<hadoop:configuration id="hadoopConf">
+		fs.default.name=hdfs://NameNode:9000
+	</hadoop:configuration>	
+	<!-- 
+		usr/local/hadoop-2.7.3/etc/hadoop/core-site.xml파일의 하둡주소 입력
+		Configuration hadoopConf=new Configuration();
+		conf.set("fs.default.name", "hdfs://localhost:9000")
+	 -->
+	
+	<hadoop:job id="movieJob"
+		configuration-ref="hadoopConf"
+		input-path="/input_movie_ns1/"
+		output-path="/output_ns1/"
+		mapper="com.sist.mapred.MovieMapper"
+		reducer="com.sist.mapred.MovieReducer"
+		scope="prototype"
+	/>
+	<hadoop:job id="recommandJob"
+		configuration-ref="hadoopConf"
+		input-path="/input_recom_ns1/"
+		output-path="/output_recom_ns1/"
+		mapper="com.sist.mapred.RecommandMapper"
+		reducer="com.sist.mapred.RecommandReducer"
+		scope="prototype"
+	/>
+	<!-- 위 input-path에 폴더를 지정하면 의 모든 파일을 분석한다.!! 파일을 지정하면 한파일만 읽어 분석한다.-->
+	<!-- 분석할 대상은 공유, 결과는 따로 가지고 온다.(실습에서만) 프로젝트는 한 폴더 안에서 작업 클릭할때마다 바뀌어야 하므로 scope는 singloeton이 아닌 prototype으로-->
+	<!-- 
+		Job job=new Job(hadoopConf);
+		job.setMapperClass(MovieMapper.class);
+		job.setMapperClass(MovieReducer.class);
+		FileInputFormat.setInputPath("/input/");
+		FileOutputFormat.addOutputPath("/output_ns1/");
+		분석내용이 여러개인경우 다른 job을 또 만들어야 한다.
+	 -->
+	
+		
+	<hadoop:job-runner job-ref="movieJob" id="mj"
+		run-at-startup="false"
+	/>
+	<hadoop:job-runner job-ref="recommandJob" id="rj"
+		run-at-startup="false"
+	/>
+	<!-- spring연동. 원하는 위치에서 실행하기 위해서 처음에는 실행을 안한다.-->
+	
+</beans>
